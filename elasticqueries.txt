@@ -1,0 +1,107 @@
+PUT _ingest/pipeline/stdcfgsc
+{
+ 
+   "description": "Pipeline for stdcfgsc",
+   "processors": [
+      {
+         "set": {
+            "field": "taxonomy",
+            "value": "t/prod/stdcfgsc"
+         }
+      },
+      {
+         "set": {
+            "field": "relevancye",
+            "value": "{{salescatalog.categorynames}} {{salescatalog.name}} {{salescatalog.shortdescription}} {{salescatalog.variantcode}} {{cms.nameshort}} {{cms.namefull}} {{config.ocexternalname}}"
+         }
+      },
+      {
+         "set": {
+            "field": "relevancyd",
+            "value": "{{salescatalog.exkeywords}} {{header.id}}"
+         }
+      },
+      {
+         "set": {
+            "field": "relevancyc",
+            "value": ""
+         }
+      },
+      {
+         "set": {
+            "field": "relevancyb",
+            "value": "{{techspec}} {{cms.metadescription}} {{cms.titleoverride}} {{cms.descriptionshort}} {{cms.descriptionmedium}} {{cms.descriptionlong}} {{cms.brandname}}"
+         }
+      },
+      {
+         "set": {
+            "field": "relevancya",
+            "value": "{{config.configmodules}}"
+         }
+      },
+      {
+         "set": {
+            "field": "ngramsData",
+            "value": "{{salescatalog.categorynames}} {{salescatalog.name}} {{salescatalog.shortdescription}} {{salescatalog.variantcode}} {{cms.nameshort}} {{cms.namefull}} {{config.ocexternalname}} {{salescatalog.exkeywords}} {{header.id}}"
+         }
+      },
+      {
+         "set": {
+            "field": "shingledData",
+            "value": "{{salescatalog.categorynames}} {{salescatalog.name}} {{salescatalog.shortdescription}} {{salescatalog.variantcode}} {{cms.nameshort}} {{cms.namefull}} {{config.ocexternalname}} {{salescatalog.exkeywords}} {{header.id}}"
+         }
+      }
+   ]
+   
+}
+
+
+GET /_ingest/pipeline/stdcfgsc
+
+
+DELETE /search-test-case-en/
+
+
+POST /_bulk?pipeline=stdcfgsc
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "1" } }
+{ "salescatalog" : {"name" :"inspiron mouse", "categorynames":["all-product/mouse/inspiron-mouse"] }, "country" : "", "language": "en", "documenttype": "stdcfgsc"}
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "2" } }
+{ "salescatalog" : {"name" :"vostro 15\" laptop", "categorynames":["all-product/laptops/vostro-laptop"] }, "country" : "us", "language": "en", "documenttype": "stdcfgsc"}
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "3" } }
+{ "salescatalog" : {"name" :"inspiron mouse", "categorynames":["all-product/mouse/inspiron-mouse"] }, "country" : "us", "language": "", "documenttype": "stdcfgsc"}
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "4" } }
+{ "salescatalog" : {"name" :"inspiron laptop", "categorynames":["all-product/laptops/inspiron-laptop"] }, "country" : "us", "language": "en", "documenttype": ""}
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "5" } }
+{ "salescatalog" : {"name" :"inspiron mouse", "categorynames":["all-product/mouse/inspiron-mouse"] }, "country" : "us", "language": "en", "documenttype": "stdcfgsc"}
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "6" } }
+{ "salescatalog" : {"name" :"inspiron mouse", "categorynames":["all-product/mouse/inspiron-mouse"] }, "country" : "us", "language": "en", "documenttype": ""}
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "7" } }
+{ "salescatalog" : {"name" :"vostro laptop", "categorynames":["all-product/laptops/vostro-laptop"] }, "country" : "us", "language": "", "documenttype": "stdcfgsc"}
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "8" } }
+{ "salescatalog" : {"name" :"inspiron mouse", "categorynames":["all-product/mouse/inspiron-mouse"] }, "country" : "us", "language": "en", "documenttype": "stdcfgsc"}
+{ "create" : { "_index" : "search-test-case-en", "_type" : "product_document_15", "_id" : "9" } }
+{ "salescatalog" : {"name" :"inspiron laptop", "categorynames":["all-product/laptops/inspiron-laptop"] }, "country" : "us", "language": "en", "documenttype": "stdcfgsc"}
+
+
+
+
+POST /search-test-case-en/_search
+{
+   "size": 50,
+   "query": {
+      "bool": {  
+         "must" : {
+            "multi_match" : {
+               "query" : "inspiron laptop",
+               "fields" : [ "winsnp.browseproductid", "relevancye^5"],
+               "operator":   "or"
+            }
+         },
+         "filter": [
+            {"term": {"country": "us" }},
+            {"term": {"language":"en"}},
+            {"terms": {"documenttype": ["stdcfgsc","winsnp"]}}
+         ]
+      }
+   }
+}

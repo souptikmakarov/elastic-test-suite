@@ -1,0 +1,91 @@
+<html>
+	<head>
+		<meta charset="utf-8" />
+    	<meta name="viewport" content="width=device-width" />
+    	<title>Run Tests</title>
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+		<link rel="stylesheet" type="text/css" href="libraries/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="libraries/css/runTests.css">
+
+	</head>
+	<body>
+		<div class="container">
+            <!-- ko if: (isTestCasesLoaded() && isTestCasesFound()) -->
+				<div class="panel-group" id="accordion_test_case" data-bind="foreach: taskList">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion_test_case" 
+									data-bind="attr: {href: $root.getAppendedString('#testcase_', Id())}, text: Name">
+								</a>
+								<img data-bind="attr: {src: TaskScenarioStatus}" style="max-width: 20px; max-height: 20px; float: right;"></img>
+								<a href="#" data-bind="click: function(data,event){$parent.runTest($index())}" style="float: right; padding-right: 5px">Run Test</a>
+							</h4>
+						</div>
+						<div class="panel-collapse collapse" data-bind="attr: {id: $root.getAppendedString('testcase_', Id())}">
+							<!-- ko if: Steps().length > 0 -->
+							<div class="panel-body">
+								<div class="panel-group" data-bind="attr: {id: $root.getAppendedString('accordion_request_', Name())}, foreach: Steps">
+									<div class="panel panel-primary">
+										<div class="panel-heading">
+											<h4 class="panel-title">
+												<a data-toggle="collapse" 
+													data-bind="attr: {'data-parent': $root.getAppendedString('#accordion_request_', Name()), 
+														href: $root.getAppendedString('#', 'testcase', $parent.Id(), Name())}, text: Name">
+												</a>
+												<img data-bind="attr: {src: StepCompletion}" style="max-width: 20px; max-height: 20px; float: right;"></img>
+											</h4>
+										</div>
+										<div class="panel-collapse collapse" data-bind="attr: {id: $root.getAppendedString('testcase', $parent.Id(), Name())}">
+											<div class="panel-body">
+												<p data-bind="text: $root.getAppendedString('RequestType: ', RequestType())"></p>
+												<p data-bind="text: $root.getAppendedString('Url: ', Url())"></p>
+												<p data-bind="text: $root.getAppendedString('RequestBody: ', RequestBody())"></p>
+												<div data-bind="foreach: TestScenarios">
+													<div class="panel panel-default">
+														<div class="panel-heading">
+															<span data-bind="text: $root.getAppendedString('TestScenario ', $index())"></span>
+															<img data-bind="attr: {src: TestScenarioStatus}" style="max-width: 20px; max-height: 20px; float: right;"></img>
+														</div>
+														<div class="panel-body">
+															<p data-bind="text: $root.getAppendedString('TestScenario Name: ', Name())"></p>
+															<p data-bind="text: $root.getAppendedString('TestScenario Condition: ', Condition())"></p>
+															<p data-bind="text: $root.getAppendedString('TestScenario TestScenarioStatus: ', TestScenarioStatus())"></p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- /ko -->
+							<!-- ko ifnot: Steps().length > 0 -->
+							<p>No steps found</p>
+							<!-- /ko -->
+						</div>
+					</div>
+				</div>
+			<!-- /ko -->
+			<!-- ko if: (isTestCasesLoaded() && !isTestCasesFound()) -->
+				<p>No test cases found</p>
+			<!-- /ko -->
+			<!-- ko ifnot: isTestCasesLoaded() -->
+				<p>Loading....</p>
+			<!-- /ko -->
+			<!-- <span data-bind="text: isTestCasesLoaded"></span>
+			<span data-bind="text: isTestCasesFound"></span> -->
+		
+		</div>
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script> -->
+		<script type="text/javascript" src="libraries/js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="libraries/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="libraries/js/knockout-3.4.2.js"></script>
+		<!-- <script type="text/javascript" src="libraries/js/elasticsearch-js/elasticsearch.jquery.min.js"></script> -->
+		<script type="text/javascript" src="libraries/js/elasticsearch-js/elasticsearch.min.js"></script>
+		<script type="text/javascript" src="libraries/js/elasticservice.js"></script>
+		<script type="text/javascript" src="libraries/js/runTests.js"></script>
+	</body>
+</html>
